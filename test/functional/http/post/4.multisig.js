@@ -563,7 +563,7 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 
 		function postSecondSignature (params, cb) {
 			var transaction = node.lisk.signature.createSignature(params.secret, params.secondSecret);
-			http.post('/api/transaction', {
+			http.post('/api/transactions', {
 				transaction: transaction
 			}, cb);
 		}
@@ -763,14 +763,14 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 						};
 						postSecondSignature(params, function (err, res) {
 							node.expect(err).to.not.exist;
-							node.expect(res.body.statusCode).to.equal(200);
+							node.expect(res.body.success).to.be.true;
 							transactionInCheckId = multisigTransaction.id;
 							node.onNewBlock(done);
 						});
 					});
 
 					it('should confirm transaction', function (done) {
-						checkConfirmedTransactions([transactionInCheckId, multisigTransaction], done);
+						checkConfirmedTransactions([transactionInCheckId, multisigTransaction.id], done);
 					});
 				});
 
@@ -793,7 +793,7 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 					});
 
 					it('should confirm transaction', function (done) {
-						checkConfirmedTransactions([transactionInCheckId, multisigTransaction], done);
+						checkConfirmedTransactions([transactionInCheckId, multisigTransaction.id], done);
 					});
 				});
 
@@ -814,7 +814,7 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 					});
 
 					it('should confirm transaction', function (done) {
-						checkConfirmedTransactions([transactionInCheckId, multisigTransaction], done);
+						checkConfirmedTransactions([transactionInCheckId, multisigTransaction.id], done);
 					});
 				});
 
@@ -835,9 +835,9 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 								node.expect(res.body.success).to.equal(true);
 							});
 							transactionsToCheckIds = results.map(function (res) {
-								return res.body.transaction.id;
+								return res.body.transactionId;
 							});
-							transactionsToCheckIds.push(multisigTransaction);
+							transactionsToCheckIds.push(multisigTransaction.id);
 							node.onNewBlock(done);
 						});
 					});
@@ -852,17 +852,16 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 					var transactionInCheckId;
 
 					beforeEach(function (done) {
-						createMultisignatureAndConfirm(multisigAccount, function (err, res) {
+						createMultisignatureAndConfirm(multisigAccount, function (err, transaction) {
 							node.expect(err).to.not.exist;
-							node.expect(res.body.success).to.equal(true);
-							transactionInCheckId = res.body.transactionId || res.body.transaction.id;
+							transactionInCheckId = transaction.id;
 							node.onNewBlock(done);
 						});
 					});
 
 					// TODO: This test should be updated after introducing determinism in the order of multisignature transaction confirmations
 					it('should confirm one of the transaction', function (done) {
-						node.async.map([transactionInCheckId, multisigTransaction], function (id, mapCb) {
+						node.async.map([transactionInCheckId, multisigTransaction.id], function (id, mapCb) {
 							getTransactionById(id, mapCb);
 						}, function (err, results) {
 							node.expect(err).to.not.exist;
@@ -884,17 +883,17 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 						var applicationName = node.randomApplicationName();
 						createDapp({
 							account: multisigAccount,
-							applicationName: applicationName,
+							applicationName: applicationName
 						}, function (err, res) {
 							node.expect(err).to.not.exist;
 							node.expect(res.body.success).to.equal(true);
-							transactionInCheckId = res.body.transactionId || res.body.transaction.id;
+							transactionInCheckId = res.body.transactionId;
 							node.onNewBlock(done);
 						});
 					});
 
 					it('should confirm transaction', function (done) {
-						checkConfirmedTransactions([transactionInCheckId, multisigTransaction], done);
+						checkConfirmedTransactions([transactionInCheckId, multisigTransaction.id], done);
 					});
 				});
 
@@ -906,7 +905,7 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 						node.async.map([node.randomApplicationName(), node.randomApplicationName(), node.randomApplicationName()], function (applicationName, cb) {
 							createDapp({
 								account: multisigAccount,
-								applicationName: applicationName,
+								applicationName: applicationName
 							}, cb);
 						}, function (err, results) {
 							node.expect(err).to.not.exist;
@@ -914,9 +913,9 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 								node.expect(res.body.success).to.equal(true);
 							});
 							transactionsToCheckIds = results.map(function (res) {
-								return res.body.transaction.id;
+								return res.body.transactionId;
 							});
-							transactionsToCheckIds.push(multisigTransaction);
+							transactionsToCheckIds.push(multisigTransaction.id);
 							node.onNewBlock(done);
 						});
 					});
@@ -935,11 +934,11 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 					var applicationName = node.randomApplicationName();
 					createDapp({
 						account: multisigAccount,
-						applicationName: applicationName,
+						applicationName: applicationName
 					}, function (err, res) {
 						node.expect(err).to.not.exist;
 						node.expect(res.body.success).to.equal(true);
-						dappId = res.body.transactionId || res.body.transaction.id;
+						dappId = res.body.transactionId;
 						node.onNewBlock(done);
 					});
 				});
@@ -969,7 +968,7 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 							createIntransfer(params, function (err, res) {
 								node.expect(err).to.not.exist;
 								node.expect(res.body.success).to.equal(true);
-								transactionInCheckId = res.body.transactionId || res.body.transaction.id;
+								transactionInCheckId = res.body.transactionId;
 								node.onNewBlock(done);
 							});
 						});
@@ -1073,7 +1072,7 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 								createOutTransfer(outTransferParams, function (err, res) {
 									node.expect(err).to.not.exist;
 									node.expect(res.body.success).to.equal(true);
-									transactionInCheckId = res.body.transactionId || res.body.transaction.id;
+									transactionInCheckId = res.body.transactionId;
 									node.onNewBlock(done);
 								});
 							});
@@ -1107,7 +1106,7 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 										node.expect(res.body.success).to.equal(true);
 									});
 									transactionsToCheckIds = results.map(function (res) {
-										return res.body.transactionId || res.body.transaction.id;
+										return res.body.transactionId;
 									});
 									transactionsToCheckIds.push(multisigTransaction.id);
 									node.onNewBlock(done);
@@ -1186,9 +1185,9 @@ describe('POST /api/transactions (type 4) register multisignature', function () 
 										node.expect(res.body.success).to.equal(true);
 									});
 									transactionsToCheckIds = result.map(function (res) {
-										return res.body.transactionId || res.body.transaction.id;
+										return res.body.transactionId;
 									});
-									transactionsToCheckIds.push(multisigTransaction);
+									transactionsToCheckIds.push(multisigTransaction.id);
 									node.onNewBlock(done);
 								});
 							});
