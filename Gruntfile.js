@@ -89,6 +89,11 @@ module.exports = function (grunt) {
 			fetchCoverage: {
 				command: 'rm -rf ./test/.coverage-func.zip; curl -o ./test/.coverage-func.zip $HOST/coverage/download',
 				maxBuffer: maxBufferSize
+			},
+
+			testIntegration: {
+				command: './node_modules/.bin/_mocha ./test/integration',
+				maxBuffer: maxBufferSize
 			}
 		},
 
@@ -135,6 +140,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('jenkins', ['exec:coverageSingle']);
 	grunt.registerTask('eslint-nofix', ['eslint']);
 	grunt.registerTask('test', ['eslint', 'exec:coverage']);
+	grunt.registerTask('test-integration', ['eslint', 'exec:testIntegration']);
 
 	grunt.registerTask('eslint-fix', 'Run eslint and fix formatting', function () {
 		grunt.config.set('eslint.options.fix', true);

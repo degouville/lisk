@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node app.js",
     "test": "./node_modules/.bin/grunt test --verbose",
+    "test-integration": "./node_modules/.bin/grunt test-integration",
     "jenkins": "./node_modules/.bin/grunt jenkins --verbose",
     "eslint": "./node_modules/.bin/grunt eslint-nofix --verbose",
     "fetchCoverage": "./node_modules/.bin/grunt exec:fetchCoverage --verbose",
