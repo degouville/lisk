@@ -58,7 +58,7 @@ describe('given configurations for nodes A, B, C running on ip "0.0.0.0" on port
 								Promise.all([
 									utils.http.postTransaction(utils.transactions.generateValidTransaction(), configurations.nodeA.port),
 									utils.http.postTransaction(utils.transactions.generateValidTransaction(), configurations.nodeB.port)
-								]).then(function (res) {
+								]).then(function () {
 									setTimeout(sendPeriodically, interval);
 								}).catch(function (error) {
 									console.error('Failed to post transaction to local node', error);
@@ -70,15 +70,8 @@ describe('given configurations for nodes A, B, C running on ip "0.0.0.0" on port
 
 						describe('when network runs for 3 minutes', function () {
 
-							var networkHeight;
-
 							before(function (done) {
-								setTimeout(function () {
-									setup.getNetworkStatus(function (err, res) {
-										networkHeight = res.height;
-										done();
-									});
-								}, 3 * 60 * 1000);
+								setTimeout(done, 3 * 60 * 1000);
 							});
 							
 							it('nodes A, B, C should have same height', function () {

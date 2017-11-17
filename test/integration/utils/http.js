@@ -21,6 +21,9 @@ var endpoints = {
 			},
 			postTransaction: function (ip, port) {
 				return 'http://' + ip + ':' + port + '/peer/transactions';
+			},
+			enableForging: function (ip, port) {
+				return 'http://' + ip + ':' + port + '/api/delegates/forging/enable';
 			}
 		},
 		'1.0.0': {
@@ -32,6 +35,9 @@ var endpoints = {
 			},
 			postTransaction: function (ip, port) {
 				return 'http://' + ip + ':' + port + '/api/transactions';
+			},
+			enableForging: function (ip, port) {
+				return 'http://' + ip + ':' + port + '/api/delegates/forging';
 			}
 		}
 	}
@@ -85,6 +91,18 @@ module.exports = {
 			}
 		}).then(function (res) {
 			return res.body.blocks;
+		});
+	},
+
+	enableForging: function (secret, port, ip) {
+		return popsicle.post({
+			url: endpoints.versions[currentVersion].enableForging(ip || '127.0.0.1', port || 4000),
+			headers: headers,
+			data: {
+				secret: secret
+			}
+		}).then(function (res) {
+			return res.body.success;
 		});
 	}
 };
