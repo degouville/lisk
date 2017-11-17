@@ -336,7 +336,7 @@ node.randomApplicationName = function () {
 	var custom = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 	return node.randomString.generate({
-		length: node.randomNumber(1, 32),
+		length: node.randomNumber(5, 32),
 		charset: custom
 	});
 };
