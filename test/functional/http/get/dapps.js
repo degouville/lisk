@@ -291,7 +291,7 @@ describe('GET /api/dapps', function () {
 			});
 		});
 
-		describe('orderBy=', function () {
+		describe('sort=', function () {
 
 			// Creates 20 random applications to increase dataset
 			before(function () {
@@ -318,7 +318,7 @@ describe('GET /api/dapps', function () {
 
 			it('using "unknown:unknown" should be ok', function () {
 				var params = [
-					'orderBy=' + 'unknown:unknown'
+					'sort=' + 'unknown:unknown'
 				];
 
 				return getDappsPromise(params).then(function (res) {
@@ -329,7 +329,7 @@ describe('GET /api/dapps', function () {
 
 			it('using "category:unknown" should return result in ascending order', function () {
 				var params = [
-					'orderBy=' + 'name:unknown'
+					'sort=' + 'name:unknown'
 				];
 
 				return getDappsPromise(params).then(function (res) {
@@ -344,7 +344,7 @@ describe('GET /api/dapps', function () {
 
 			it('using "name:asc" should return result in ascending order', function () {
 				var params = [
-					'orderBy=' + 'name:asc'
+					'sort=' + 'name:asc'
 				];
 
 				return getDappsPromise(params).then(function (res) {
@@ -361,7 +361,7 @@ describe('GET /api/dapps', function () {
 
 			it('using "category:desc" should return result in descending order', function () {
 				var params = [
-					'orderBy=' + 'name:desc'
+					'sort=' + 'name:desc'
 				];
 
 				return getDappsPromise(params).then(function (res) {
